@@ -15,7 +15,6 @@ test_log = [
             ('S', 100, 210, "IWRD", 12)]
 
 
-
 -- Question 1. Write a function transaction_to_string :: Transaction -> String that converts a single transaction in the format shown above.
 transaction_to_string :: Transaction -> String
 transaction_to_string transaction =
@@ -61,9 +60,7 @@ profit transactionList target = sum (map (\n -> update_money n 0 ) (get_trades t
 
 --Question 8 Write a function profit_report :: [String] -> [Transaction] -> String that takes a list of stocks and a transaction log, and returns the human-readable string containing the proﬁt and loss report. Speciﬁcally, for each stock in the input list, the report should include the line
 profit_report :: [String] -> [Transaction] -> String
-profit_report targetList transactionList = intercalate "\n" (map (\n -> n ++ ": " ++ show(profit transactionList n)) targetList)
-
-
+profit_report targetList transactionList = unlines (map (\n -> n ++ ": " ++ show(profit transactionList n)) targetList)
 
 
 -- Question 9 Write a function complex_profit_report :: String -> Prices -> String that takes a transaction log and a price database, and returns a proﬁt and loss report in the same format as used in Question 8.
@@ -91,10 +88,9 @@ explain_log inputLog prizeInfo = do
 main = do
 -- Question 1
 --    putStrLn(transaction_to_string('S', 150, 1240, "VTI", 9))
---    putStrLn(trade_report_list(take 3 test_log))
 
 -- Question 2
---    putStrLn(show(trade_report_list(take 3 test_log)))
+    putStrLn(show(trade_report_list(take 3 test_log)))
 
 -- Question 3
 --    putStrLn(show(stock_test "VTI" ('B', 100, 1104, "VTI", 1)))
