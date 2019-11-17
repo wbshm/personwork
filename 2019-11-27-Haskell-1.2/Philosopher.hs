@@ -1,61 +1,72 @@
-module Philosopher (simulate) where
-
-import System.Random
+module Philosophers where
+ 
 import Control.Monad
 import Control.Concurrent
+
 import Control.Concurrent.STM
-import Debug.Trace
+import System.Random
+ 
+-- TMVars are transactional references. They can only be used in transactional actions.
+-- They are either empty or contain one value. Taking an empty reference fails and
+-- putting a value in a full reference fails. A transactional action only succeeds
+-- when all the component actions succeed, else it rolls back and retries until it
+-- succeeds.
+-- The Int is just for display purposes.
+type Fork = TMVar Int
 
-type Semaphore = TVar Bool
+ -- newFork is Int  return IO Fork
+newFork :: Int -> IO Fork
+newFork i = newTMVarIO i
+ 
+-- The basic transactional operations on forks
+takeFork :: Fork -> STM Int
+takeFork fork = takeTMVar fork
+ 
+releaseFork :: Int -> Fork -> STM ()
+releaseFork i fork = putTMVar fork i
 
-newSem :: Bool -> IO Semaphore
-newSem val = newTVarIO val
+type Name = String
 
-p :: Semaphore -> STM ()
-p sem = do
-    readTVar sem >>= check
-    writeTVar sem False
+runPhilosopher :: Name -> (Fork, Fork) -> IO ()
+runPhilosopher name (left, right) = forever $ do
+  putStrLn (name ++ " is hungry.")
 
-v :: Semaphore -> STM ()
-v sem = writeTVar sem True
+  -- Run the transactional action atomically.
+  -- The type system ensures this is the only way to run transactional actions.
+  -- Only when the philosopher's left and right forks are taken up should he be allowed to eat.
+  (leftNum, rightNum) <- atomically $ do
+    leftNum <- takeFork left
+    rightNum <- takeFork right
+    return (leftNum, rightNum)
 
-type Buffer a = TVar [a]
+  putStrLn (name ++ " got forks " ++ show leftNum ++ " and " ++ show rightNum ++ " and is now eating.")
+  delay <- randomRIO (1,10)
+  threadDelay (delay * 1000000) -- 1, 10 seconds. threadDelay uses nanoseconds.
+  putStrLn (name ++ " is done eating. Going back to thinking.")
 
-newBuffer :: IO (Buffer a)
-newBuffer = newTVarIO []
+  atomically $ do
+    releaseFork leftNum left
+    releaseFork rightNum right
 
-push :: Buffer a -> a -> STM ()
-push buffer item = readTVar buffer >>= writeTVar buffer . (++ [item])
+  delay <- randomRIO (1, 10)
+  threadDelay (delay * 1000000)
 
-pop :: Buffer a -> STM a
-pop buffer = readTVar buffer >>= \x -> case x of
-    []     -> retry
-    (x:xs) -> writeTVar buffer xs >> return x
+philosophers :: [String]
+philosophers = ["Philosopher1", "Philosopher2", "Philosopher3", "Philosopher4", "Philosopher5"]
 
-output buffer = atomically (pop buffer) >>= putStrLn >> output buffer
+main = do
+  forks <- mapM newFork [1..5]
+  let namedPhilosophers  = map runPhilosopher philosophers
+      forkPairs          = zip forks (tail . cycle $ forks)
+      philosophersWithForks = zipWith ($) namedPhilosophers forkPairs
 
-simulate n = do
-    chopsticks <- replicateM n (newSem True)
-    bufout <- newBuffer
-    let thead i = philosopher i (chopsticks!!i) (chopsticks!!((i+1) `mod` n))
-    mapM_ (\i -> forkIO (thead i bufout)) [0..n-1]
-    output bufout
+  putStrLn "Running the philosophers. Press enter to quit."
 
-philosopher :: Int -> Semaphore -> Semaphore -> Buffer String -> IO ()
-philosopher n left right bufout = do
-    -- thinking.
-    atomically (push bufout $ "Philosopher " ++ show n ++ " is thinking.")
-    randomDelay
+  mapM_ forkIO philosophersWithForks
 
-    atomically $ do { p left; p right }
+  -- All threads exit when the main thread exits.
+  getLine
 
-    -- eating.
-    atomically (push bufout $ "Philosopher " ++ show n ++ " is eating.")
-    randomDelay
-
-    atomically $ do { v left; v right }
-
-    -- continue.
-    philosopher n left right bufout
-
-    where randomDelay = randomRIO (100000, 500000) >>= threadDelay
+-- 主要思路： 多个临界资源，要么全部分配，要么一个都不分配，因此不会出现死锁的情形。
+-- 即： 能同时拿到左右手的叉子才可以拿到叉子，不然拿不到叉子。
+-- 缺点： 如果 1,3号轮流拿到叉子，有可能会导致2号一直都拿不到叉子。从而出现无限等待。
