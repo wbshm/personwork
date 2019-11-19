@@ -40,16 +40,19 @@ runPhilosopher name (left, right) = forever $ do
     return (leftNum, rightNum)
 
   putStrLn (name ++ " got forks " ++ show leftNum ++ " and " ++ show rightNum ++ " and is now eating.")
-  delay <- randomRIO (1,10)
-  threadDelay (delay * 1000000) -- 1, 10 seconds. threadDelay uses nanoseconds.
+  randomDelay
   putStrLn (name ++ " is done eating. Going back to thinking.")
 
   atomically $ do
     releaseFork leftNum left
     releaseFork rightNum right
 
-  delay <- randomRIO (1, 10)
-  threadDelay (delay * 1000000)
+  randomDelay
+
+
+randomDelay :: IO ()
+randomDelay = do delay <- getStdRandom(randomR (1,10))
+                 threadDelay (delay * 1000000)
 
 philosophers :: [String]
 philosophers = ["Philosopher1", "Philosopher2", "Philosopher3", "Philosopher4", "Philosopher5"]
@@ -57,7 +60,7 @@ philosophers = ["Philosopher1", "Philosopher2", "Philosopher3", "Philosopher4", 
 main = do
   forks <- mapM newFork [1..5]
   let namedPhilosophers  = map runPhilosopher philosophers
-      forkPairs          = zip forks (tail . cycle $ forks)
+      forkPairs          = zip forks (tail (forks ++ forks))
       philosophersWithForks = zipWith ($) namedPhilosophers forkPairs
 
   putStrLn "Running the philosophers. Press enter to quit."
