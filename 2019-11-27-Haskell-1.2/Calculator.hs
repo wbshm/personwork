@@ -14,34 +14,86 @@ import Graphics.UI.Threepenny.Core
 main :: IO ()
 main = startGUI defaultConfig setup
 
+
 setup :: Window -> UI ()
 setup window = void $ do
     return window # set title "Currency Converter"
 
-    elSubtract   <- UI.button # set UI.text "-"
-    elAdd     <- UI.button # set UI.text "+"
-    elMul     <- UI.button # set UI.text "*"
-    elDivide  <- UI.button # set UI.text "/"
-    elIs      <- UI.button # set UI.text "="
-    elDel      <- UI.button # set UI.text "CE"
-    elClean   <- UI.button # set UI.text "C"
-    elLeft    <- UI.button # set UI.text "("
-    elRight    <- UI.button # set UI.text ")"
-    elInput <- UI.input
+    let btnCss = [("display","inline-block"),
+                  ("padding","6px 12px"),
+                  ("margin-bottom","0"),
+                  ("font-size","14px"),
+                  ("font-weight","400"),
+                  ("line-height","1.42857143"),
+                  ("text-align","center"),
+                  ("white-space","nowrap"),
+                  ("vertical-align","middle"),
+                  ("-ms-touch-action","manipulation"),
+                  ("touch-action","manipulation"),
+                  ("cursor","pointer"),
+                  ("-webkit-user-select","none"),
+                  ("-moz-user-select","none"),
+                  ("-ms-user-select","none"),
+                  ("user-select","none"),
+                  ("background-image","none"),
+                  ("border","1px solid transparent"),
+                  ("color","#333"),
+                  ("background-color","#fff"),
+                  ("border-color","#ccc"),
+                  ("border-radius","4px")]
+    let btnSize = [("width","35px")]
+    let inputCss = [("width","100%"),
+                    ("height","34px"),
+                    ("padding","6px 12px"),
+                    ("font-size","14px"),
+                    ("line-height","1.42857143"),
+                    ("color","#555"),
+                    ("background-color","#fff"),
+                    ("border","1px solid #ccc"),
+                    ("border-radius","4px"),
+                    ("box-shadow","inset 0 1px 1px rgba(0,0,0,.075)"),
+                    ("-webkit-transition","border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s"),
+                    ("-o-transition","border-color ease-in-out .15s,box-shadow ease-in-out .15s"),
+                    ("transition","border-color ease-in-out .15s,box-shadow ease-in-out .15s")]
+    let spanCss = [("font-family","'Helvetica Neue',Helvetica,Arial,sans-serif"),
+                   ("font-size","14px"),
+                   ("line-height","1.42857143"),
+                   ("display","block"),
+                   ("margin-top","5px"),
+                   ("margin-bottom","10px"),
+                   ("color","#737373")]
+    let spanCss2 = [("font-size","14px"),
+                    ("line-height","1.42857143"),
+                    ("color","#333"),
+                    ("display","inline-block"),
+                    ("max-width","100%"),
+                    ("margin-bottom","5px"),
+                    ("font-weight","700")]
 
-    elNum1    <- UI.button # set UI.text "1"
-    elNum2    <- UI.button # set UI.text "2"
-    elNum3    <- UI.button # set UI.text "3"
-    elNum4    <- UI.button # set UI.text "4"
-    elNum5    <- UI.button # set UI.text "5"
-    elNum6    <- UI.button # set UI.text "6"
-    elNum7    <- UI.button # set UI.text "7"
-    elNum8    <- UI.button # set UI.text "8"
-    elNum9    <- UI.button # set UI.text "9"
-    elNum0    <- UI.button # set UI.text "0"
-    elDot    <- UI.button # set UI.text "."
+    elSubtract   <- UI.button # set UI.text "-" #set UI.style (btnCss ++ btnSize)
+    elAdd     <- UI.button # set UI.text "+" #set UI.style (btnCss ++ btnSize)
+    elMul     <- UI.button # set UI.text "*" #set UI.style (btnCss ++ btnSize)
+    elDivide  <- UI.button # set UI.text "/" #set UI.style (btnCss ++ btnSize)
+    elIs      <- UI.button # set UI.text "=" #set UI.style (btnCss ++ btnSize)
+    elDel      <- UI.button # set UI.text "CE" #set UI.style btnCss
+    elClean   <- UI.button # set UI.text "C" #set UI.style (btnCss ++ btnSize)
+    elLeft    <- UI.button # set UI.text "(" #set UI.style (btnCss ++ btnSize)
+    elRight    <- UI.button # set UI.text ")" #set UI.style (btnCss ++ btnSize)
+    elInput <- UI.input #set UI.style inputCss
 
-    elResult <- UI.span
+    elNum1    <- UI.button # set UI.text "1" #set UI.style (btnCss ++ btnSize)
+    elNum2    <- UI.button # set UI.text "2" #set UI.style (btnCss ++ btnSize)
+    elNum3    <- UI.button # set UI.text "3" #set UI.style (btnCss ++ btnSize)
+    elNum4    <- UI.button # set UI.text "4" #set UI.style (btnCss ++ btnSize)
+    elNum5    <- UI.button # set UI.text "5" #set UI.style (btnCss ++ btnSize)
+    elNum6    <- UI.button # set UI.text "6" #set UI.style (btnCss ++ btnSize)
+    elNum7    <- UI.button # set UI.text "7" #set UI.style (btnCss ++ btnSize)
+    elNum8    <- UI.button # set UI.text "8" #set UI.style (btnCss ++ btnSize)
+    elNum9    <- UI.button # set UI.text "9" #set UI.style (btnCss ++ btnSize)
+    elNum0    <- UI.button # set UI.text "0" #set UI.style (btnCss ++ btnSize)
+    elDot    <- UI.button # set UI.text "." #set UI.style (btnCss ++ btnSize)
+
+    elResult <- UI.span #set UI.style spanCss2
 
     getBody window #+ [
             column [
@@ -53,7 +105,7 @@ setup window = void $ do
                  grid[[element elDot,element elClean,element elDel]],
             element elInput,
             element elIs,
-            row [UI.span # set text "Res: ", element elResult]
+            row [UI.span # set text "Res: " #set UI.style spanCss, element elResult]
             ]]
 
     on UI.click elIs $ \_ -> do
@@ -205,12 +257,18 @@ formatStr inputStr = do
     let res = zipWith (++) num aft
     concat(res ++ [head(reverse num)])
 
+--state monad
 
 
 {-
-1. 扫描输入的字符串
-2. 如果是数字则推入数字栈Calculator::
-3. 如果是 +/- 则推入操作栈
-4. 如果是 *// 保留操作符，遇到下个数字就和栈顶的数字运算，并将运算结果压入数字栈
+工作原理：
 
+1. 扫描输入的字符串
+2. 获取优先级最高的“()”的内容，并将结果计算出来，
+    2.1 计算结果，先替换"n--m" 成 "n+m",替换"n-m"成 "n+-m"
+    2.2 解析替换后的结果，然后根据优先级"*/+-",从左往右，计算字符串的结果
+    2.3 返回计算后的结果
+3. 把计算出来的结果，替换掉2里面的"()"。
+4. 如果经过3之后还有“()”,则再进行第二步
+5. 没有"()"之后，就直接计算结果。
 -}
