@@ -29,10 +29,26 @@ doCalculate numArr optArr = do
             let nextOpt = (take highOpt optArr) ++ (drop (highOpt + 1) optArr)
             doCalculate nextNum nextOpt
 
-explainStr String -> Double
+calculator:: String -> Double
+calculator inputStr = do
+    let nums = ['0','1','2','3','4','5','6','7','8','9']
+    let opts = ['+','-','*','/']
+    let len = length inputStr
+    let optList = [c | c<-inputStr, c `elem` opts]
+    let numList = words [if elem c "+-*/" then ' ' else c|c <- inputStr]
+    doCalculate (map(\n -> read n ::Double) numList) optList
 
+explainStr::String -> Double
+explainStr inputStr = do
+    let close = maybe (-1) (+0) (findIndex (==')') inputStr)
+    if close == -1 then do
+        calculator inputStr
+    else do
+        let str = take close inputStr
+        let start = (length str) - (maybe (-1) (+0) (findIndex (=='(') (reverse str)))
+        let num = calculator (drop start str)
+        explainStr((take (start-1) inputStr) ++ show(num) ++ (drop (close+1) inputStr))
 
 
 main = do
-    let a =doCalculate [4,4,1] "//"
-    putStrLn(show a)
+    putStrLn(show (explainStr "(123+(1+1*123)+1)"))

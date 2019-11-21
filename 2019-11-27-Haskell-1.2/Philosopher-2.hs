@@ -21,49 +21,57 @@ logDone :: String -> StringBuffer -> STM ()
 logDone name buffer = writeTChan buffer $ "Philosopher" ++ name ++ " is done eating. Going back to thinking."
 
 firstLogEntry :: StringBuffer -> STM String
-firstLogEntry buffer = do empty <- isEmptyTChan buffer
-                          if empty then retry
-                                   else readTChan buffer
+firstLogEntry buffer = do
+    empty <- isEmptyTChan buffer
+    if empty then do
+        retry
+    else do
+        readTChan buffer
 
 takeForks :: Fork -> Fork -> STM ()
-takeForks left right = do leftUsed <- readTVar left
-                          rightUsed <- readTVar right
-                          if leftUsed || rightUsed
-                             then retry
-                             else do writeTVar left True
-                                     writeTVar right True
+takeForks left right = do
+    leftUsed <- readTVar left
+    rightUsed <- readTVar right
+    if leftUsed || rightUsed then
+        retry
+    else do
+        writeTVar left True
+        writeTVar right True
 
 putForks :: Fork -> Fork -> STM ()
 putForks left right = do writeTVar left False
                          writeTVar right False
 
 philosopher :: String -> StringBuffer -> Fork -> Fork -> IO ()
-philosopher name out left right = do atomically $ logHungry name out
-                                     randomDelay
-                                     atomically $ takeForks left right
-                                     atomically $ logEating name out
-                                     randomDelay
-                                     atomically $ putForks left right
-                                     atomically $ logDone name out
-                                     randomDelay
+philosopher name out left right = do
+    atomically $ logHungry name out
+    randomDelay
+    atomically $ takeForks left right
+    atomically $ logEating name out
+    randomDelay
+    atomically $ putForks left right
+    atomically $ logDone name out
+    randomDelay
 
 
 randomDelay :: IO ()
-randomDelay = do delay <- getStdRandom(randomR (1,5))
-                 threadDelay (delay * 1000000)
+randomDelay = do
+    delay <- getStdRandom(randomR (1,5))
+    threadDelay (delay * 1000000)
 
 main :: IO ()
-main = do let n = 5
-          forks <- replicateM n $ newTVarIO False
-          buffer <- newTChanIO
-          forM_ [0 .. n - 1] $ \i ->
-              do let left = forks !! i
-                     right = forks !! ((i + 1) `mod` n)
-                     name = philosopherNames !! i
-                 forkIO $ forever $ philosopher name buffer left right
-
-          forever $ do str <- atomically $ firstLogEntry buffer
-                       putStrLn str
+main = do
+    let n = 5
+    forks <- replicateM n $ newTVarIO False
+    buffer <- newTChanIO
+    forM_ [0 .. n - 1] $ \i -> do
+        let left = forks !! i
+        let right = forks !! ((i + 1) `mod` n)
+        let name = philosopherNames !! i
+        forkIO $ forever $ philosopher name buffer left right
+    forever $ do
+        str <- atomically $ firstLogEntry buffer
+        putStrLn str
 
 -- 主要思路： 多个临界资源，要么全部分配，要么一个都不分配，因此不会出现死锁的情形。
 -- 即： 能同时拿到左右手的叉子才可以拿到叉子，不然拿不到叉子。
