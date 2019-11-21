@@ -26,8 +26,8 @@ setup window = void $ do
     elIs      <- UI.button # set UI.text "="
     elDel      <- UI.button # set UI.text "CE"
     elClean   <- UI.button # set UI.text "C"
---    elLeft    <- UI.button # set UI.text "("
---    elRight    <- UI.button # set UI.text ")"
+    elLeft    <- UI.button # set UI.text "("
+    elRight    <- UI.button # set UI.text ")"
     elInput <- UI.input
 
     elNum1    <- UI.button # set UI.text "1"
@@ -40,6 +40,7 @@ setup window = void $ do
     elNum8    <- UI.button # set UI.text "8"
     elNum9    <- UI.button # set UI.text "9"
     elNum0    <- UI.button # set UI.text "0"
+    elDot    <- UI.button # set UI.text "."
 
     elResult <- UI.span
 
@@ -48,7 +49,9 @@ setup window = void $ do
                 grid [[element elNum7,element elNum8, element elNum9,element elDivide],
                      [element elNum4,element elNum5, element elNum6,element elMul],
                      [element elNum1,element elNum2, element elNum3,element elSubtract],
-                     [element elNum0,element elClean,element elDel, element elAdd]],
+                     [element elNum0,element elLeft,element elRight,element elAdd]
+                     ],
+                 grid[[element elDot,element elClean,element elDel]],
             element elInput,
             element elIs,
             row [UI.span # set text "Res: ", element elResult]
@@ -56,7 +59,7 @@ setup window = void $ do
 
     on UI.click elIs $ \_ -> do
         i <- get value elInput
-        let s = show(calculator i)
+        let s = show(explainStr i)
         element elResult # set UI.text s
 
     on UI.click elClean $ \_ -> do
@@ -64,7 +67,11 @@ setup window = void $ do
 
     on UI.click elDel $ \_ -> do
         i <- get value elInput
-        element elInput # set value (reverse(tail(reverse i)))
+        if length i > 0 then
+            element elInput # set value (reverse(tail(reverse i)))
+        else
+            element elInput # set value ""
+
 
     on UI.click elDivide $ \_ -> do
         i <- get value elInput
@@ -102,6 +109,17 @@ setup window = void $ do
             element elInput # set value i
         else do
             element elInput # set value (i ++ "0")
+
+    on UI.click elLeft $ \_ -> do
+        i <- get value elInput
+        element elInput # set value  (i ++ "(")
+    on UI.click elRight $ \_ -> do
+        i <- get value elInput
+        element elInput # set value  (i ++ ")")
+
+    on UI.click elDot $ \_ -> do
+        i <- get value elInput
+        element elInput # set value  (i ++ ".")
     on UI.click elNum1 $ \_ -> do
         i <- get value elInput
         element elInput # set value  (i ++ "1")
@@ -169,6 +187,16 @@ doCalculate numArr optArr = do
             let nextOpt = (take highOpt optArr) ++ (drop (highOpt + 1) optArr)
             doCalculate nextNum nextOpt
 
+explainStr::String -> Double
+explainStr inputStr = do
+    let close = maybe (-1) (+0) (findIndex (==')') inputStr)
+    if close == -1 then do
+        calculator inputStr
+    else do
+        let str = take close inputStr
+        let start = (length str) - (maybe (-1) (+0) (findIndex (=='(') (reverse str)))
+        let num = calculator (drop start str)
+        explainStr((take (start-1) inputStr) ++ show(num) ++ (drop (close+1) inputStr))
 
 
 --state monad
