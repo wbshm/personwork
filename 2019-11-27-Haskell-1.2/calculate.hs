@@ -30,13 +30,15 @@ doCalculate numArr optArr = do
             doCalculate nextNum nextOpt
 
 calculator:: String -> Double
-calculator inputStr = do
+calculator input = do
+    let inputStr = formatStr input
     let nums = ['0','1','2','3','4','5','6','7','8','9']
-    let opts = ['+','-','*','/']
-    let len = length inputStr
+    let opts = ['+','*','/']
     let optList = [c | c<-inputStr, c `elem` opts]
-    let numList = words [if elem c "+-*/" then ' ' else c|c <- inputStr]
+    let numList = words [if elem c opts then ' ' else c|c <- inputStr]
     doCalculate (map(\n -> read n ::Double) numList) optList
+--    putStrLn (show optList)
+--    putStrLn (show numList)
 
 explainStr::String -> Double
 explainStr inputStr = do
@@ -50,5 +52,18 @@ explainStr inputStr = do
         explainStr((take (start-1) inputStr) ++ show(num) ++ (drop (close+1) inputStr))
 
 
+formatStr::String->String
+formatStr inputStr = do
+    let str = if (inputStr !! 0)=='-' then '0':inputStr else inputStr
+    let opt = words [if elem c "+-*/" then c else ' ' |c <- str]
+    let num = words [if elem c "+-*/" then ' ' else c |c <- str]
+    let aft = [if c =="--" then "+" else if c=="-" then "+-" else c | c <- opt]
+    let res = zipWith (++) num aft
+    concat(res ++ [head(reverse num)])
+
+
+
 main = do
-    putStrLn(show (explainStr "(123+(1+1*123)+1)"))
+--    putStrLn(show (explainStr ))
+--    calculator "-3+1"
+    putStrLn(show (explainStr "5+3*(5-9)"))

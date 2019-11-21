@@ -18,7 +18,6 @@ setup :: Window -> UI ()
 setup window = void $ do
     return window # set title "Currency Converter"
 
-
     elSubtract   <- UI.button # set UI.text "-"
     elAdd     <- UI.button # set UI.text "+"
     elMul     <- UI.button # set UI.text "*"
@@ -150,14 +149,13 @@ setup window = void $ do
 
 
 calculator:: String -> Double
-calculator inputStr = do
+calculator input = do
+    let inputStr = formatStr input
     let nums = ['0','1','2','3','4','5','6','7','8','9']
-    let opts = ['+','-','*','/']
-    let len = length inputStr
+    let opts = ['+','*','/']
     let optList = [c | c<-inputStr, c `elem` opts]
-    let numList = words [if elem c "+-*/" then ' ' else c|c <- inputStr]
+    let numList = words [if elem c opts then ' ' else c|c <- inputStr]
     doCalculate (map(\n -> read n ::Double) numList) optList
---    sum (map(\n -> read n ::Double) numList)
 
 doCalculate::[Double] -> String -> Double
 doCalculate numArr optArr = do
@@ -198,8 +196,15 @@ explainStr inputStr = do
         let num = calculator (drop start str)
         explainStr((take (start-1) inputStr) ++ show(num) ++ (drop (close+1) inputStr))
 
+formatStr::String->String
+formatStr inputStr = do
+    let str = if (inputStr !! 0)=='-' then '0':inputStr else inputStr
+    let opt = words [if elem c "+-*/" then c else ' ' |c <- str]
+    let num = words [if elem c "+-*/" then ' ' else c |c <- str]
+    let aft = [if c =="--" then "+" else if c=="-" then "+-" else c | c <- opt]
+    let res = zipWith (++) num aft
+    concat(res ++ [head(reverse num)])
 
---state monad
 
 
 {-
