@@ -3,6 +3,9 @@ package ca.utoronto.utm.paint;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+/**
+ * https://axiom.utm.utoronto.ca/~207/19f/assignments/a3/index.shtml
+ */
 public class Paint extends Application {
 
     PaintModel model; // Model
