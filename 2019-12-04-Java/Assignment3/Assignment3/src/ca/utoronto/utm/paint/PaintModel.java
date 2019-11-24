@@ -1,16 +1,22 @@
 package ca.utoronto.utm.paint;
 
+import javafx.scene.canvas.GraphicsContext;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import javafx.scene.canvas.GraphicsContext;
-
 public class PaintModel extends Observable implements Observer {
 
     public void save(PrintWriter writer) {
-
+        writer.println("------------------ START EXAMPLE -----------------\nPaint Save File Version 1.0");
+        for (PaintCommand command : commands) {
+            writer.print(command.toString());
+        }
+        writer.println("End Paint Save File");
+        writer.println("------------------ END   EXAMPLE -----------------");
+        writer.close();
     }
 
     public void reset() {

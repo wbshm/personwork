@@ -29,4 +29,19 @@ public class SquiggleCommand extends PaintCommand {
         }
 
     }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append("\tpoints\n");
+        for (Point p : points) {
+            str.append("\t\tpoint:(").append(p.x).append(",").append(p.y).append(")\n");
+        }
+        str.append("\tend points\n");
+        return "Squiggle\n" +
+                "\tcolor:" + getColorString() + "\n" +
+                "\tfilled:" + isFill() + "\n" +
+                str +
+                "End Squiggle\n";
+    }
 }

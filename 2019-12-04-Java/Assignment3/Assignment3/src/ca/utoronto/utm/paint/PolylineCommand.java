@@ -50,4 +50,19 @@ public class PolylineCommand extends PaintCommand {
             g.strokeLine(end.x, end.y, last.x, last.y);
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append("\tpoints\n");
+        for (Point p : points) {
+            str.append("\t\tpoint:(").append(p.x).append(",").append(p.y).append(")\n");
+        }
+        str.append("\tend points\n");
+        return "Polyline\n" +
+                "\tcolor:" + getColorString() + "\n" +
+                "\tfilled:" + isFill() + "\n" +
+                str +
+                "End Polyline\n";
+    }
 }

@@ -47,5 +47,12 @@ public abstract class PaintCommand extends Observable {
         return s;
     }
 
+    public String getColorString() {
+        int red = (int) (color.getRed() * 256);
+        int green = (int) (color.getGreen() * 256);
+        int blue = (int) (color.getBlue() * 256);
+        return red + "," + green + "," + blue;
+    }
+
     public abstract void execute(GraphicsContext g);
 }
