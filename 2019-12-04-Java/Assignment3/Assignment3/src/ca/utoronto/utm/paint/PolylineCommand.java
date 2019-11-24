@@ -15,6 +15,9 @@ public class PolylineCommand extends PaintCommand {
 
     private Point last;
 
+    PolylineCommand() {
+    }
+
     PolylineCommand(Point point) {
         this.add(point);
     }
@@ -31,7 +34,7 @@ public class PolylineCommand extends PaintCommand {
         this.notifyObservers();
     }
 
-    private ArrayList<Point> getPoints() {
+    ArrayList<Point> getPoints() {
         return this.points;
     }
 

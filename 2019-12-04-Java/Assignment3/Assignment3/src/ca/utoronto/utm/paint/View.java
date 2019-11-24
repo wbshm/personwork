@@ -12,9 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
 
 public class View implements EventHandler<ActionEvent> {
 
@@ -131,21 +129,25 @@ public class View implements EventHandler<ActionEvent> {
     public void handle(ActionEvent event) {
         System.out.println(((MenuItem) event.getSource()).getText());
         String command = ((MenuItem) event.getSource()).getText();
-        if (command.equals("Open")) {
+        if ("Open".equals(command)) {
             FileChooser fc = new FileChooser();
             File file = fc.showOpenDialog(this.stage);
 
             if (file != null) {
                 System.out.println("Opening: " + file.getName() + "." + "\n");
-                // BufferedReader bufferedReader=null; // FIX THIS
-                PaintModel paintModel = new PaintModel();
-                // PaintFileParser parser = new PaintFileParser();
-                // parser.parse(bufferedReader,  paintModel);
-                this.setPaintModel(paintModel);
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new FileReader(file.getPath()));
+                    PaintModel paintModel = new PaintModel();
+                    PaintFileParser parser = new PaintFileParser();
+                    parser.parse(bufferedReader, paintModel);
+                    this.setPaintModel(paintModel);
+                } catch (FileNotFoundException e) {
+                    System.out.println("Open command error,File not Found");
+                }
             } else {
                 System.out.println("Open command cancelled by user." + "\n");
             }
-        } else if (command.equals("Save")) {
+        } else if ("Save".equals(command)) {
             FileChooser fc = new FileChooser();
             File file = fc.showSaveDialog(this.stage);
 
@@ -163,10 +165,10 @@ public class View implements EventHandler<ActionEvent> {
             } else {
                 System.out.println("Save command cancelled by user." + "\n");
             }
-        } else if (command.equals("New")) {
+        } else if ("New".equals(command)) {
             // this.paintModel.reset();
             this.setPaintModel(new PaintModel());
-        } else if (command.equals("Exit")) {
+        } else if ("Exit".equals(command)) {
             Platform.exit();
         }
     }
