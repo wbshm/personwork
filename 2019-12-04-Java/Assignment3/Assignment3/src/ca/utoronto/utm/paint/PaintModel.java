@@ -10,12 +10,11 @@ import java.util.Observer;
 public class PaintModel extends Observable implements Observer {
 
     public void save(PrintWriter writer) {
-        writer.println("------------------ START EXAMPLE -----------------\nPaint Save File Version 1.0");
+        writer.println("Paint Save File Version 1.0");
         for (PaintCommand command : commands) {
             writer.print(command.toString());
         }
         writer.println("End Paint Save File");
-        writer.println("------------------ END   EXAMPLE -----------------");
         writer.close();
     }
 
