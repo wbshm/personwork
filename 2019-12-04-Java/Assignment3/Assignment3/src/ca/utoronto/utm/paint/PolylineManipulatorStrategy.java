@@ -24,6 +24,8 @@ public class PolylineManipulatorStrategy extends ShapeManipulatorStrategy {
         if (e.getButton() == MouseButton.PRIMARY) {
             addPoint(point);
         } else if (e.getButton() == MouseButton.SECONDARY) {
+            addPoint(point);
+            polylineCommand.setLast(null);
             polylineCommand = null;
         }
     }
