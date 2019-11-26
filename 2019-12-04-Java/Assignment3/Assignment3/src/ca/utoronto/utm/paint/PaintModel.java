@@ -1,7 +1,5 @@
 package ca.utoronto.utm.paint;
 
-import javafx.scene.canvas.GraphicsContext;
-
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Observable;
