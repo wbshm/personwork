@@ -1,9 +1,8 @@
 package ca.utoronto.utm.paint;
 
-import java.util.Observable;
-
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+
+import java.util.Observable;
 
 public abstract class PaintCommand extends Observable {
     private Color color;

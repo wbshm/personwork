@@ -1,7 +1,5 @@
 package ca.utoronto.utm.paint;
 
-import javafx.scene.canvas.GraphicsContext;
-
 import java.util.ArrayList;
 
 
