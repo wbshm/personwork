@@ -47,16 +47,8 @@ public class RectangleCommand extends PaintCommand {
     }
 
     @Override
-    public void execute(GraphicsContext g) {
-        Point topLeft = this.getTopLeft();
-        Point dimensions = this.getDimensions();
-        if (this.isFill()) {
-            g.setFill(this.getColor());
-            g.fillRect(topLeft.x, topLeft.y, dimensions.x, dimensions.y);
-        } else {
-            g.setStroke(this.getColor());
-            g.strokeRect(topLeft.x, topLeft.y, dimensions.x, dimensions.y);
-        }
+    public void accept(DrawVisitor drawVisitor) {
+        drawVisitor.drawing(this);
     }
 
     @Override

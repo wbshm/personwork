@@ -34,11 +34,11 @@ public class PaintModel extends Observable implements Observer {
         this.notifyObservers();
     }
 
-    private ArrayList<PaintCommand> commands = new ArrayList<PaintCommand>();
+    private ArrayList<PaintCommand> commands = new ArrayList<>();
 
-    public void executeAll(GraphicsContext g) {
+    public void accept(DrawVisitor drawVisitor) {
         for (PaintCommand c : this.commands) {
-            c.execute(g);
+            c.accept(drawVisitor);
         }
     }
 

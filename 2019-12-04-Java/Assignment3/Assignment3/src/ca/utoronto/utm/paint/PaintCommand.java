@@ -54,5 +54,5 @@ public abstract class PaintCommand extends Observable {
         return red + "," + green + "," + blue;
     }
 
-    public abstract void execute(GraphicsContext g);
+    public abstract void accept(DrawVisitor drawVisitor);
 }

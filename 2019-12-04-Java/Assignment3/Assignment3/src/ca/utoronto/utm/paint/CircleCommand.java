@@ -31,18 +31,10 @@ public class CircleCommand extends PaintCommand {
         this.notifyObservers();
     }
 
+
     @Override
-    public void execute(GraphicsContext g) {
-        int x = this.getCentre().x;
-        int y = this.getCentre().y;
-        int radius = this.getRadius();
-        if (this.isFill()) {
-            g.setFill(this.getColor());
-            g.fillOval(x - radius, y - radius, 2 * radius, 2 * radius);
-        } else {
-            g.setStroke(this.getColor());
-            g.strokeOval(x - radius, y - radius, 2 * radius, 2 * radius);
-        }
+    public void accept(DrawVisitor drawVisitor) {
+        drawVisitor.drawing(this);
     }
 
     @Override

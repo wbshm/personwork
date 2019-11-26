@@ -14,10 +14,12 @@ class PaintPanel extends StackPane implements Observer, EventHandler<MouseEvent>
     private PaintModel model;
     private Canvas canvas;
     private ShapeManipulatorStrategy strategy;
+    private DrawVisitor drawVisitor;
 
     public PaintPanel(PaintModel model) {
 
         this.canvas = new Canvas(500, 500);
+        this.drawVisitor = new DrawVisitorImpl();
         this.getChildren().add(this.canvas);
         // The canvas is transparent, so the background color of the
         // containing pane serves as the background color of the canvas.
@@ -33,7 +35,9 @@ class PaintPanel extends StackPane implements Observer, EventHandler<MouseEvent>
      * @param model
      */
     public void setPaintModel(PaintModel model) {
-        if (model == null) return;
+        if (model == null) {
+            return;
+        }
         if (this.model != null) {
             this.model.deleteObserver(this);
         }
@@ -46,7 +50,8 @@ class PaintPanel extends StackPane implements Observer, EventHandler<MouseEvent>
     public void repaint() {
         GraphicsContext g = this.canvas.getGraphicsContext2D();
         g.clearRect(0, 0, this.getWidth(), this.getHeight());
-        this.model.executeAll(g);
+        ((DrawVisitorImpl) this.drawVisitor).setG(g);
+        this.model.accept(this.drawVisitor);
     }
 
     @Override
