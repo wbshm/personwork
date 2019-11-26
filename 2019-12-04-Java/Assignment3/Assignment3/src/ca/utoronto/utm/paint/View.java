@@ -13,6 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class View implements EventHandler<ActionEvent> {
 
@@ -155,9 +156,8 @@ public class View implements EventHandler<ActionEvent> {
                 // This is where a real application would open the file.
                 System.out.println("Saving: " + file.getName() + "." + "\n");
                 // Add something like the following...
-                PrintWriter writer = null;
                 try {
-                    writer = new PrintWriter(file);
+                    PrintWriter writer = new PrintWriter(file);
                     View.save(writer, this.paintModel);
                 } catch (FileNotFoundException e) {
                     System.out.println("Save command error.File not found" + "\n");
@@ -180,6 +180,18 @@ public class View implements EventHandler<ActionEvent> {
      * @param paintModel
      */
     public static void save(PrintWriter writer, PaintModel paintModel) {
-        paintModel.save(writer);
+        SaveVisitor saveVisitor = new SaveVisitorImpl(writer);
+        ArrayList<PaintCommand> commands = paintModel.getCommands();
+        writer.println("Paint Save File Version 1.0");
+        try {
+            for (PaintCommand command : commands) {
+                command.save(saveVisitor);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        writer.println("End Paint Save File");
+        writer.close();
+
     }
 }

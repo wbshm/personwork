@@ -2,6 +2,7 @@ package ca.utoronto.utm.paint;
 
 import javafx.scene.paint.Color;
 
+import java.io.IOException;
 import java.util.Observable;
 
 public abstract class PaintCommand extends Observable {
@@ -54,4 +55,6 @@ public abstract class PaintCommand extends Observable {
     }
 
     public abstract void accept(DrawVisitor drawVisitor);
+
+    public abstract void save(SaveVisitor saveVisitor) throws IOException;
 }

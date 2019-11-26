@@ -1,5 +1,7 @@
 package ca.utoronto.utm.paint;
 
+import java.io.IOException;
+
 public class RectangleCommand extends PaintCommand {
     private Point p1, p2;
 
@@ -47,6 +49,11 @@ public class RectangleCommand extends PaintCommand {
     @Override
     public void accept(DrawVisitor drawVisitor) {
         drawVisitor.drawing(this);
+    }
+
+    @Override
+    public void save(SaveVisitor saveVisitor) throws IOException {
+        saveVisitor.save(this);
     }
 
     @Override

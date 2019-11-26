@@ -1,5 +1,7 @@
 package ca.utoronto.utm.paint;
 
+import java.io.IOException;
+
 public class CircleCommand extends PaintCommand {
     private Point centre;
     private int radius;
@@ -33,6 +35,11 @@ public class CircleCommand extends PaintCommand {
     @Override
     public void accept(DrawVisitor drawVisitor) {
         drawVisitor.drawing(this);
+    }
+
+    @Override
+    public void save(SaveVisitor saveVisitor) throws IOException {
+        saveVisitor.save(this);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ca.utoronto.utm.paint;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class SquiggleCommand extends PaintCommand {
@@ -18,6 +19,11 @@ public class SquiggleCommand extends PaintCommand {
     @Override
     public void accept(DrawVisitor drawVisitor) {
         drawVisitor.drawing(this);
+    }
+
+    @Override
+    public void save(SaveVisitor saveVisitor) throws IOException {
+        saveVisitor.save(this);
     }
 
     @Override
