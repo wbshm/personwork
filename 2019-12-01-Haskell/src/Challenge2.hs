@@ -9,11 +9,16 @@ challenge2 inStr = do
     if close == -1 then do
         inputStr
     else do
-        inputStr ++ "\n" ++ challenge2(explain inputStr)
+        let next = explain inputStr
+        if next == inputStr then
+            inputStr 
+        else do
+            inputStr ++ "\n" ++ challenge2(next)
 
 
 explain::String->String
 explain inStr = do
+
     let inputStr = samplify inStr
     let close = maybe (-1) (+0) (findIndex (==')') inputStr)
     if close == -1 then do
@@ -21,19 +26,16 @@ explain inStr = do
     else do
         let str = take close inputStr
         let start = (length str) - (maybe (-1) (+0) (findIndex (=='(') (reverse str)))
-        if close - start < 3 then do
-            let rtn = (take (start-1) inputStr) ++ (drop start (take close inputStr)) ++ (drop (close+1) inputStr)
-            explain rtn
-        else do
-            if (length inputStr) > close + 2 then do
-                if elem (inputStr !! (close + 2)) ['a'..] then do
-                        let res = calculate (drop start str) [(inputStr !! (close + 2))]
-                        let rtn = if (length res) == 1 then res else "("++res++")" 
-                        (take (start-1) inputStr) ++ rtn ++ (drop (close+3) inputStr)
-                else do
-                    (take (close+1) inputStr) ++ (explain(drop (close+1) inputStr))
-            else do 
-                inputStr
+        if (length inputStr) > close + 2 then do
+            if elem (inputStr !! (close + 2)) ['a'..] && (inputStr !! (close+1)) /= '(' then do
+                    let res = calculate (drop start str) [(inputStr !! (close + 2))]
+                    let rtn = if (length res) == 1 then res else "("++res++")" 
+                    (take (start-1) inputStr) ++ rtn ++ (drop (close+3) inputStr)
+            else do
+                (take (close+1) inputStr) ++ (explain(drop (close+1) inputStr))
+        else do 
+            inputStr
+
 
 samplify:: String -> String
 samplify inputStr = do
@@ -46,7 +48,7 @@ samplify inputStr = do
         if close - start < 3 && start < length(str) then do
             let rtn = (take (start-1) inputStr) ++ (drop start (take close inputStr)) ++ (drop (close+1) inputStr)
             samplify rtn 
-        else 
+        else do
             (take (close+1) inputStr) ++ (samplify(drop (close+1) inputStr))
 
 calculate:: String -> String ->String
@@ -82,6 +84,6 @@ main = do
 
     -- putStrLn(show(count "(λx -> λy -> x) z ((λt -> t) u)"))
     -- putStrLn(calculate "λy -> x" "z")
-    -- putStrLn(challenge2 "(λx -> λy -> x) z ((λt -> t) u)" )
-    putStrLn(explain "(λx -> x)(λy -> y)")
+    putStrLn(challenge2 "(λx -> λy -> x) z ((λt -> t) u)" )
+    putStrLn(challenge2 "λx -> (λy -> y)")
     -- putStrLn(explain "(λy -> z) (((u)))")
