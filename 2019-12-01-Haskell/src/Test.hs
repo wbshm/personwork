@@ -2,6 +2,7 @@ import Challenge1
 import Challenge2
 import Challenge3
 import Challenge4
+import Challenge5
 import Challenge6
 
 testC1::String -> IO()
@@ -40,6 +41,14 @@ testC4 run = do
     putStrLn(challenge4 "let f1 x1 = x2 in f1 x1")
     putStrLn(challenge4 "let f1 x2 = x2; f2 x1 = x1 in f1 x1")
 
+testC5::String -> IO()
+testC5 run = do
+    putStrLn("----- challenge5 -----")
+    putStrLn(challenge5 "f0 = f0 in f0")
+    putStrLn(challenge5 "f1 x2 = x2 in f1") 
+    putStrLn(challenge5 "f1 x2 x3 = x3 x2 in f1")
+    putStrLn(challenge5 "let f0 x0 = f1; f1 x1 = x1 in f0")
+    putStrLn(challenge5 "let f0 x0 x1 = x0; f1 x1 = f0 x1 f1 in f1")
 
 testC6::String -> IO()
 testC6 run = do
@@ -55,4 +64,5 @@ main = do
     testC2("")
     testC3("")
     testC4("")
+    testC5("")
     testC6("")
