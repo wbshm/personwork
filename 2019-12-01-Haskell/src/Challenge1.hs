@@ -1,4 +1,4 @@
-
+module Challenge1 (challenge1) where
 import Data.List
 
 challenge1 :: String -> String

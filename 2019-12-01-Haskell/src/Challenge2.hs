@@ -1,3 +1,4 @@
+module Challenge2 (challenge2) where
 
 import Data.List
 

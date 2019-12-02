@@ -1,4 +1,4 @@
-
+module Challenge4 (challenge4) where
 import Data.List
 
 challenge4::String -> String
@@ -48,10 +48,8 @@ explain inStr = do
 
 
 main = do
-    -- putStrLn "let x1 = x2"
-    -- putStrLn "x1 (x2 x3)"
-    -- putStrLn "x1 x2 x3"
-    -- putStrLn "let f1 x1 = x2 in f1 x1"
-    -- putStrLn "let f1 x2 = x2; f2 x1 = x1 in f1 x1"
-    putStrLn(explain "x1 (x2 x3)")
+    putStrLn(challenge4 "let x1 = x2")
+    putStrLn(challenge4 "x1 (x2 x3)")
+    putStrLn(challenge4 "x1 x2 x3")
+    putStrLn(challenge4 "let f1 x1 = x2 in f1 x1")
     putStrLn(challenge4 "let f1 x2 = x2; f2 x1 = x1 in f1 x1")
