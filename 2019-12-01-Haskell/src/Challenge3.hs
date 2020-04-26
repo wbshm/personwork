@@ -3,12 +3,8 @@ module Challenge3 (challenge3) where
 import Data.List
 
 
-explain::String -> String
-explain inStr =  do
-    inStr
-
-samplify:: String -> String
-samplify inputStr = do
+simplify3:: String -> String
+simplify3 inputStr = do
     let close = maybe (-1) (+0) (findIndex (==')') inputStr)
     if close == -1 then do
         inputStr
@@ -17,9 +13,9 @@ samplify inputStr = do
         let start = (length str) - (maybe (-1) (+0) (findIndex (=='(') (reverse str)))
         if close - start < 3 && start < length(str) then do
             let rtn = (take (start-1) inputStr) ++ (drop start (take close inputStr)) ++ (drop (close+1) inputStr)
-            samplify rtn 
+            simplify3 rtn
         else do
-            (take (close+1) inputStr) ++ (samplify(drop (close+1) inputStr))
+            (take (close+1) inputStr) ++ (simplify3(drop (close+1) inputStr))
 
 challenge3::String -> String
 challenge3 inStr = do
@@ -29,7 +25,7 @@ challenge3 inStr = do
     let str = [if c=='A' then ' ' else c |c<-str4]
     let strArr = words str
     let strArr2 = [if elem 'λ' val then (take 3 val) ++"->" ++ (drop 3 val)  else val  | val <- strArr]
-    samplify( unwords strArr2)
+    simplify3( unwords strArr2)
 
 
 main = do

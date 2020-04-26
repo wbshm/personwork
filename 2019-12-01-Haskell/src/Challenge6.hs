@@ -4,7 +4,7 @@ import Data.List
 
 challenge6::String->String
 challenge6 inStr = do 
-    let str = explain inStr
+    let str = explain6 inStr
     let res = [if c=='_' then ' ' else c |c<-str]
     let arr = words res
     let iArr = [ c |c<-arr,(head c)=='f' || (head c)=='i']
@@ -19,8 +19,8 @@ challenge6 inStr = do
         "let "++ unwords([c | c <- (words res2), head c /= 'i']) ++ " in " ++ i
 
 
-explain::String -> String
-explain inStr = do
+explain6::String -> String
+explain6 inStr = do
     if inStr=="" then
         ""
     else do
@@ -32,7 +32,7 @@ explain inStr = do
                 if (length strArr) == 3 then do
                     "f0_x"++[last(head(strArr))]++"_=_x"++[last(last strArr)]
                 else do
-                    explain(take l inStr) ++ " " ++ explain(drop (l+1) inStr)
+                    explain6(take l inStr) ++ " " ++ explain6(drop (l+1) inStr)
             else do
                 let arr = words inStr
                 if length arr == 1 then do
@@ -41,11 +41,11 @@ explain inStr = do
                 else if length arr == 3 then 
                     "f0_x"++[last(head(arr))]++"_=_x"++[last(last arr)]
                 else
-                    "f0_x"++[last(head(arr))]++"_=_x"++[last(last arr)] ++" " ++ explain(unwords (drop 3 arr) )
+                    "f0_x"++[last(head(arr))]++"_=_x"++[last(last arr)] ++" " ++ explain6(unwords (drop 3 arr) )
         else do
             let str = take close inStr
             let start = (length str) - (maybe (-1) (+0) (findIndex (=='(') (reverse str)))
-            (take (start-1) inStr) ++""++ (explain(drop (start) (take close inStr))) ++ " " ++explain (drop (close+1) inStr)
+            (take (start-1) inStr) ++""++ (explain6(drop (start) (take close inStr))) ++ " " ++explain6 (drop (close+1) inStr)
 
 
 main = do

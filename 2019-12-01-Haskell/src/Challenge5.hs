@@ -5,14 +5,14 @@ import Data.List
 challenge5::String -> String
 challenge5 inputStr = do
     let inStr = if (take 3 inputStr) == "let" then (drop 4 inputStr) else inputStr
-    explain inStr
+    explain5 inStr
 
 
-explain::String -> String
-explain inStr = do
+explain5::String -> String
+explain5 inStr = do
     let i = maybe (-1) (+0) (findIndex (=='i') inStr)
     if i /= -1 then do
-        explain (take i inStr) ++ explain (drop (i+2) inStr)
+        explain5 (take i inStr) ++ explain5 (drop (i+2) inStr)
     else do
         let sp = maybe (-1) (+0) (findIndex (==';') inStr)
         if sp == -1 then do
@@ -23,7 +23,7 @@ explain inStr = do
                 let arr = words (take eq inStr)
                 "λ" ++ unwords([val++" ->" |val<- arr])
         else do
-            explain (take sp inStr) ++ explain (drop (sp+1) inStr)
+            explain5 (take sp inStr) ++ explain5 (drop (sp+1) inStr)
 
 
 

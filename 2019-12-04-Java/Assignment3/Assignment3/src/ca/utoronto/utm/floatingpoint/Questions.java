@@ -67,8 +67,8 @@ public class Questions {
 
         float q1f1 = 7.35f;
         label = "q1f1";
-        bits = "0[01111111]01000101000111101011100"; // FIX THIS
-        interpretation = "+1.01000101000111101011100x2^(0)"; // FIX THIS
+        bits = "0[10000001]11010110011001100110011"; // FIXTHIS
+        interpretation = "+1.11010110011001100110011x2^(2)"; // FIXTHIS
         value = q1f1;
         report(label, bits, interpretation, value);
     }
@@ -79,22 +79,22 @@ public class Questions {
 
         float q2f1 = 121.91f;
         label = "q2f1";
-        bits = "0[01111111]01000101000111101011100"; // FIX THIS
-        interpretation = "+1.01000101000111101011100x2^(0)"; // FIX THIS
+        bits = "0[10000101]11100111101000111101100"; // FIXTHIS
+        interpretation = "+1.11100111101000111101100x2^(6)"; // FIXTHIS
         value = q2f1;
         report(label, bits, interpretation, value);
 
         float q2f2 = 7.3f;
         label = "q2f2";
-        bits = "0[01111111]01000101000111101011100"; // FIX THIS
-        interpretation = "+1.01000101000111101011100x2^(0)"; // FIX THIS
+        bits = "0[10000001]11010011001100110011010"; // FIX THIS
+        interpretation = "+1.11010011001100110011010x2^(2)"; // FIXTHIS
         value = q2f2;
         report(label, bits, interpretation, value);
 
         float q2f3 = q2f1 + q2f2;
         label = "q2f3";
-        bits = "0[01111111]01000101000111101011100"; // FIX THIS
-        interpretation = "+1.01000101000111101011100x2^(0)"; // FIX THIS
+        bits = "0[10000110]00000010011010111000011"; // FIXTHIS
+        interpretation = "+1.00000010011010111000011x2^(7)"; // FIXTHIS
         value = q2f3;
         report(label, bits, interpretation, value);
     }
@@ -109,36 +109,16 @@ public class Questions {
 
         float a = 1.76f * (float) Math.pow(2, 33); // DONT CHANGE THIS
         label = "a";
-        bits = "0[01111111]01000101000111101011100"; // FIX THIS
-        interpretation = "+1.01000101000111101011100x2^(0)"; // FIX THIS
+        bits = "0[01111111]10000011000001110011001"; // FIXTHIS
+        interpretation = "+1.10000011000001110011001x2^(0)"; // FIXTHIS
         value = a;
         report(label, bits, interpretation, value);
 
         float b = 7.3f; // MAKE THIS AS LARGE AS POSSIBLE
         label = "b";
-        bits = "0[01111111]01000101000111101011100"; // FIX THIS
-        interpretation = "+1.01000101000111101011100x2^(0)"; // FIX THIS
+        bits = "0[10001000]00000000000000000000000"; // FIXTHIS
+        interpretation = "+1.00000000000000000000000x2^(9)"; // FIXTHIS
         value = b;
         report(label, bits, interpretation, value);
-
-        if (a > b && b > 0.0f) {
-            System.out.println("b looks OK! (is it as large as possible?)");
-        } else {
-            System.out.println("b is wrong!");
-        }
-
-        float q3f3 = a + b;
-        if (a == q3f3) {
-            System.out.println("(a+b) is OK! (has the error we are looking for)");
-        } else {
-            System.out.println("(a+b) is wrong!");
-        }
-
-        float q3f4 = q3f3 - a;
-        if (q3f4 == 0.0f) {
-            System.out.println("(a+b)-a is OK! (has the error we are looking for)");
-        } else {
-            System.out.println("(a+b)-a is wrong!");
-        }
     }
 }

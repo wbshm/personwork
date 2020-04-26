@@ -3,7 +3,7 @@ import Data.List
 
 challenge4::String -> String
 challenge4 inStr = do
-    let rtn = explain inStr
+    let rtn = explain4 inStr
     let str = [if c=='{' then '(' else if c=='}' then ')' else if c=='_' then ' ' else c | c <- rtn]
     if (take 3 inStr) == "let"  then do
         if length(words inStr) <= 4 then
@@ -14,18 +14,18 @@ challenge4 inStr = do
         "Just ("++ str ++")"
 
 
-explain::String -> String
-explain inStr = do
+explain4::String -> String
+explain4 inStr = do
     let close = maybe (-1) (+0) (findIndex (==')') inStr)
     if close == -1 then do
         if (take 3 inStr) == "let"  then do
             let i = maybe (-1) (+0) (findIndex (=='i') inStr)
             if inStr!!(i+1) == 'n' then
-                explain(take (i-1) inStr) ++ explain(drop (i+2) inStr)
+                explain4(take (i-1) inStr) ++ explain4(drop (i+2) inStr)
             else do
                 let slip = maybe (-1) (+0) (findIndex (==';') inStr)
                 if slip > 0 then
-                    "["++explain(take (slip) inStr) ++ explain("let "++(drop (slip+1) inStr))++"]"
+                    "["++explain4(take (slip) inStr) ++ explain4("let "++(drop (slip+1) inStr))++"]"
                     -- inStr
                 else do
                     let strArr = words [if c=='=' then ' ' else c | c<-inStr]
@@ -38,13 +38,13 @@ explain inStr = do
             
             let rtn = "LetApp{" ++ strArr2!!0 ++"}{"++ strArr2!!1 ++"}"
             if length(strArr2) > 2 then do
-                explain (rtn ++" "++ unwords(drop 2 strArr2))
+                explain4 (rtn ++" "++ unwords(drop 2 strArr2))
             else do
                 rtn
     else do
         let str = take close inStr
         let start = (length str) - (maybe (-1) (+0) (findIndex (=='(') (reverse str)))
-        explain( (take (start-1) inStr) ++"{"++ (explain(drop (start) (take close inStr))) ++ "}" ++(drop (close+1) inStr) )
+        explain4( (take (start-1) inStr) ++"{"++ (explain4(drop (start) (take close inStr))) ++ "}" ++(drop (close+1) inStr) )
 
 
 main = do

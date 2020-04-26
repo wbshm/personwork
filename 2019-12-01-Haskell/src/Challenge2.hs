@@ -10,15 +10,15 @@ challenge2 inStr = do
     if close == -1 then do
         inputStr
     else do
-        let next = explain inputStr
+        let next = explain2 inputStr
         if next == inputStr then
             inputStr 
         else do
             inputStr ++ "\n" ++ challenge2(next)
 
 
-explain::String->String
-explain inStr = do
+explain2::String->String
+explain2 inStr = do
 
     let inputStr = samplify inStr
     let close = maybe (-1) (+0) (findIndex (==')') inputStr)
@@ -33,7 +33,7 @@ explain inStr = do
                     let rtn = if (length res) == 1 then res else "("++res++")" 
                     (take (start-1) inputStr) ++ rtn ++ (drop (close+3) inputStr)
             else do
-                (take (close+1) inputStr) ++ (explain(drop (close+1) inputStr))
+                (take (close+1) inputStr) ++ (explain2(drop (close+1) inputStr))
         else do 
             inputStr
 
@@ -87,4 +87,4 @@ main = do
     -- putStrLn(calculate "λy -> x" "z")
     putStrLn(challenge2 "(λx -> λy -> x) z ((λt -> t) u)" )
     putStrLn(challenge2 "λx -> (λy -> y)")
-    -- putStrLn(explain "(λy -> z) (((u)))")
+    -- putStrLn(explain2 "(λy -> z) (((u)))")
